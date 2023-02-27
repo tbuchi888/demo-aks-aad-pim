@@ -5,19 +5,19 @@
   * AKS での AAD を利用した RBAC の事前設定についてはこちらを参考に設定してください
     * https://learn.microsoft.com/ja-jp/azure/aks/manage-azure-rbac
 * PIMの対象化 "Microsoft.Authorization/roleEligibilityScheduleRequests"
-  * https://learn.microsoft.com/en-us/azure/templates/microsoft.authorization/roleassignmentschedulerequests?pivots=deployment-language-arm-template
+  * https://learn.microsoft.com/ja-jp/azure/templates/microsoft.authorization/roleassignmentschedulerequests?pivots=deployment-language-arm-template
 
 * PIMの割当 "Microsoft.Authorization/roleAssignmentScheduleRequests"
-  * https://learn.microsoft.com/en-us/azure/templates/microsoft.authorization/roleassignmentschedulerequests?pivots=deployment-language-arm-template
+  * https://learn.microsoft.com/ja-jp/azure/templates/microsoft.authorization/roleassignmentschedulerequests?pivots=deployment-language-arm-template
 
 * Azure resource への PIM の概念や設定パラメータ等に精通していない場合は、事前に Portal UI での操作等を説明している以下公式ドキュメントを一読ください
   * https://learn.microsoft.com/ja-jp/azure/active-directory/privileged-identity-management/pim-resource-roles-assign-roles
 
 > **Warning**
-> * 現時点では、Azure リソースの PIM を利用した場合 AKS の Namespace 単位でのスコープ設定はできないようです
+> * 現時点では、Azure リソースの PIM を利用した場合 AKS の Namespace 単位でのスコープ設定はできません
 >  * Portal UI から Namespace を指定できず、ARM テンプレートでは指定すると、404 エラーとなります
-> * Azure Active Directory (Azure AD) と AKS の間で統合認証を利用した、Kubernetes 認可に Azure RBAC を使用においてスコープとして Namespace 単位でロールの割当が可能ですが、 AKS namespace 単位で JIT（Just-in-Time）アクセスを実現したい場合は、PIM 特権アクセスグループ（Preview）の利用を検討してください
-> * [Configure just-in-time cluster access with Azure AD and AKS](https://learn.microsoft.com/en-us/azure/aks/managed-aad#configure-just-in-time-cluster-access-with-azure-ad-and-aks)
+> * Azure Active Directory (Azure AD) と AKS の間で統合認証を利用した、Kubernetes 認可に Azure RBAC を使用においてスコープとして Namespace 単位でロールの割当が可能ですが、 AKS namespace 単位で JIT（Just-in-Time）アクセスを実現したい場合は、PIM 特権アクセスグループ（Preview）の利用を検討（**ただし、Preview 中の機能であることに注意**）
+> * [Configure just-in-time cluster access with Azure AD and AKS](https://learn.microsoft.com/ja-jp/azure/aks/managed-aad#configure-just-in-time-cluster-access-with-azure-ad-and-aks)
 
 ## 1. 使い方
 PIMの対象化と割当（特権のアクティブ化）として以下2種類の ARM テンプレートを用意
@@ -234,7 +234,11 @@ $ az deployment group create --resource-group YOUR-RESOURCE-GROUP --template-fil
 
 ## 2. その他
 ### 2.1. 参考 PIM 特権アクセスグループ（Preview）の Powershell（非推奨）の利用について
-以下は、[既に廃止が決定している(廃止予定日 2023/06/30 )](https://jpazureid.github.io/blog/azure-active-directory/how-to-determine-depreacated-azuread-msol/)の Powershell の旧版 Preview コマンドのため、非推奨ではありますが廃止までの期間限定で利用可能
+> **Warning**
+> * AKS namespace 単位で JIT（Just-in-Time）アクセスを実現したい場合は、[PIM 特権アクセスグループ（Preview）](https://learn.microsoft.com/ja-jp/azure/active-directory/privileged-identity-management/concept-pim-for-groups)を利用する必要があります
+> * 現時点では、ARM テンプレートや REST API 等が用意されていないため、こちらの自動化を検討する場合は、以下 Powershell の旧版 Preview コマンド　（**非推奨**）を利用する形となります
+> * ただし、以下は[既に廃止が決定している(廃止予定日 2023/06/30 )](https://jpazureid.github.io/blog/azure-active-directory/how-to-determine-depreacated-azuread-msol/)の Powershell の旧版 Preview コマンドのため、非推奨ではありますが廃止までの期間限定で利用可能なものとなります
+> * Azure の Preview 中の機能については、運用環境での使用について想定されていないことにも、ご注意ください
 
 ```
 # (1)  PowerShell を管理者にて起動し以下のコマンドを実行、Azure AD PowerShell インストール済みの場合は、競合するためいったんアンインストール
